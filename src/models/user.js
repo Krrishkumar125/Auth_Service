@@ -1,0 +1,48 @@
+'use strict';
+const {
+  Model
+} = require('sequelize');
+const bcrypt = require('bcrypt');
+
+const {SALT} =require('../config/serverConfig')
+module.exports = (sequelize, DataTypes) => {
+  class User extends Model {
+    /**
+     * Helper method for defining associations.
+     * This method is not a part of Sequelize lifecycle.
+     * The `models/index` file will call this method automatically.
+     */
+    static associate(models) {
+      // define association here
+    }
+  }
+  User.init({
+    email: {
+      type:DataTypes.STRING,
+      allowNull:false,
+      unique:true,
+      validate:{
+        isEmail:true
+      }
+    },
+    password:  {
+      type:DataTypes.STRING,
+      allowNull:false,
+      validate:{
+        len:[8,20],
+        // notIn:[[12345678,87654321,"abcdefgh","abcd1234"]],
+        // is:["/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/"]
+      }
+    }
+  }, {
+    sequelize,
+    modelName: 'User',
+  });
+
+  User.beforeCreate((user)=>{
+        //  const salt = bcrypt.genSaltSync(10);
+         const encryptedPassword = bcrypt.hashSync(user.password,SALT);
+         user.password = encryptedPassword;
+  });
+  return User;
+};
