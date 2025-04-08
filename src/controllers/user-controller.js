@@ -21,11 +21,11 @@ const create = async (req, res) => {
     });
   } catch (error) {
     console.log(error);
-    return res.status(500).json({
+    return res.status(error.statusCodes).json({
       data: {},
       success: false,
-      message: "Not able to create the user",
-      err: error,
+      message: error.message,
+      err: error.explanation,
     });
   }
 };
@@ -44,11 +44,11 @@ const signIn = async (req, res) => {
     });
   } catch (error) {
     console.log(error);
-    return res.status(500).json({
+    return res.status(error.statusCodes).json({
       data: {},
       success: false,
-      message: "Not able to find the user",
-      err: error,
+      message: error.message,
+      err: error.explanation,
     });
   }
 };
